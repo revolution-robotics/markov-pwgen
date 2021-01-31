@@ -14,18 +14,22 @@ require 'set'
 #    words of 3 to 9 chars, word_max <= 119965
 regex = /^[A-Za-z]{3,9}$/
 words_max = 119964
+alt_wordlist = '/usr/share/dict/words'
 
 wordlist = ARGV[0]
 
 if wordlist.nil? || ! File.exist?(wordlist)
-  wordlist =  '/usr/share/dict/web2'
-  STDERR.puts "Attempting to use dictionary: #{wordlist}."
+  if ! wordlist.nil?
+    STDERR.puts "#{wordlist}: Wordlist unavailable; trying: #{alt_wordlist}"
+  end
+  wordlist =  alt_wordlist
   if ! File.exist?(wordlist)
-    STDERR.puts "#{wordlist}: Dictionary unavailable; Please specify a dictionary."
+    STDERR.puts "#{wordlist}: Wordlist unavailable; Please specify another."
     exit
   end
 end
 
+STDERR.puts "Generating dictionary.js from: #{wordlist}."
 words = IO.foreach(wordlist).select { |line| line[regex] }.map(&:chomp)
 
 # Take random subset of size words_max.

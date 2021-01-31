@@ -2,7 +2,7 @@
 /*
  * @(#) markov-pwgen
  *
- * Copyright © 2020, Revolution Robotics, Inc.
+ * Copyright © 2021, Revolution Robotics, Inc.
  *
  */
 import { genMarkovPass } from '../index.js';

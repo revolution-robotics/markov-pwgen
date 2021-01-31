@@ -1,6 +1,6 @@
 {
     "name": "markov-pwgen",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Markov chain password generator",
     "dependencies": {
         "foswig": "~3.0.1",

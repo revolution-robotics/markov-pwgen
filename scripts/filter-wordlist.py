@@ -14,16 +14,19 @@ import sys, os, random, re
 #    words of 3 to 9 chars, word_max <= 119965
 regex = r'^[A-Za-z]{3,9}$'
 words_max = 119964
+alt_wordlist = '/usr/share/dict/words'
 
 wordlist = sys.argv[1] if len(sys.argv) > 1 else ''
 
 if not os.path.exists(wordlist):
-    wordlist = '/usr/share/dict/web2'
-    print(f'Attempting to use dictionary: {wordlist}', file=sys.stderr)
+    if not wordlist == '':
+        print(f'{wordlist}: Wordlist unavailable; trying: {alt_wordlist}')
+    wordlist =  alt_wordlist
     if not os.path.exists(wordlist):
-        print(f'{wordlist}: Dictionary unavailable; Please specify a dictionary.', file=sys.stderr)
+        print(f'{wordlist}: Wordlist unavailable; Please specify another.', file=sys.stderr)
         sys.exit()
 
+print(f'Generating dictionary.js from: {wordlist}', file=sys.stderr)
 words = [m.group(0) for line in open(wordlist) for m in [re.match(regex, line)] if m]
 
 if len(words) > words_max:
