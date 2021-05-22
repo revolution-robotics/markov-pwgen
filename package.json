@@ -1,30 +1,38 @@
 {
-    "name": "markov-pwgen",
-    "version": "1.0.1",
-    "description": "Markov chain password generator",
-    "dependencies": {
-        "foswig": "~3.0.1",
-        "minimist": "^1.2.5"
-    },
-    "scripts": {
-        "preinstall": "test -f dictionary.js || ./scripts/filter-wordlist.py"
-    },
-    "type": "module",
-    "main": "index.js",
-    "bin": {
-        "markov-pwgen": "bin/markov-pwgen.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/revolution-robotics/roadrunner-debian",
-        "directory": "contrib/markov-pwgen"
-    },
-    "keywords": [
-        "markov",
-        "chain",
-        "password",
-        "generator"
+  "name": "markov-pwgen",
+  "version": "1.0.3",
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
     ],
-    "author": "Andrew L. Moore",
-    "license": "MIT"
+    "plugins": [
+      "@babel/plugin-syntax-top-level-await"
+    ]
+  },
+  "description": "Markov chain password generator",
+  "dependencies": {
+    "foswig": "^3.0.1",
+    "minimist": "^1.2.5"
+  },
+  "scripts": {
+    "preinstall": "test -f dictionary.js || ./scripts/filter-wordlist.py"
+  },
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "markov-pwgen": "bin/markov-pwgen.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/revolution-robotics/roadrunner-debian",
+    "directory": "contrib/markov-pwgen"
+  },
+  "keywords": [
+    "markov",
+    "chain",
+    "password",
+    "generator"
+  ],
+  "author": "Andrew L. Moore",
+  "license": "MIT"
 }
