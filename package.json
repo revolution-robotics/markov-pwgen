@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "babel": {
     "presets": [
       "@babel/preset-env"

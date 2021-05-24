@@ -39,7 +39,7 @@ def get_wordlist(uri, context):
 def validate_wordlist(uri, context):
     filename = get_wordlist(uri, context)
 
-    if not os.path.exists(wordlist):
+    if not os.path.exists(filename):
         if filename != '':
             print(f'{filename}: Not found; trying: {WORDLIST_ALTERNATE}')
         filename = get_wordlist(WORDLIST_ALTERNATE, context)
