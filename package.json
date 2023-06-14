@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -12,7 +12,7 @@
   "description": "Markov chain password generator",
   "dependencies": {
     "foswig": "^3.0.1",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.8"
   },
   "scripts": {
     "preinstall": "test -f dictionary.js || ./scripts/filter-wordlist.py"

@@ -52,34 +52,35 @@ def clean_up(filename):
     if re.match(r'/tmp/tmp\w{6,}', filename):
         os.unlink(filename)
 
-source = sys.argv[1] if len(sys.argv) > 1 else WORDLIST_DEFAULT
+if __name__ == '__main__':
+    source = sys.argv[1] if len(sys.argv) > 1 else WORDLIST_DEFAULT
 
-try:
-    wordlist = validate_wordlist(source, ssl.create_default_context)
-except urllib.error.URLError:
-    print('SSL certificate verification failure - disabling verification')
-    wordlist = validate_wordlist(source, ssl._create_unverified_context)
+    try:
+        wordlist = validate_wordlist(source, ssl.create_default_context)
+    except urllib.error.URLError:
+        print('SSL certificate verification failure - disabling verification')
+        wordlist = validate_wordlist(source, ssl._create_unverified_context)
 
-atexit.register(clean_up, wordlist)
+    atexit.register(clean_up, wordlist)
 
-print(f'Generating dictionary.js from: {wordlist}', file=sys.stderr)
-words =  [m.group(0) for line in open(wordlist)
-          for m in [re.match(FILTER_PATTERN, line.rstrip())] if m]
+    print(f'Generating dictionary.js from: {wordlist}', file=sys.stderr)
+    words =  [m.group(0) for line in open(wordlist)
+              for m in [re.match(FILTER_PATTERN, line.rstrip())] if m]
 
-if len(words) > WORDS_MAX:
+    if len(words) > WORDS_MAX:
 
-    # Take random subset of size words_max.
-    random.shuffle(words)
-    words = words[:WORDS_MAX]
+        # Take random subset of size words_max.
+        random.shuffle(words)
+        words = words[:WORDS_MAX]
 
-with open('dictionary.js', 'w') as f:
-    f.write('''const dict = {
-    "words": [
-''')
-    for word in sorted(words):
-        f.write(f'        "{word}",\n')
-    f.write('''    ]
-};
+    with open('dictionary.js', 'w') as f:
+        f.write('''const dict = {
+        "words": [
+    ''')
+        for word in sorted(words):
+            f.write(f'        "{word}",\n')
+        f.write('''    ]
+    };
 
-export { dict };
-''')
+    export { dict };
+    ''')
