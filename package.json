@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -12,8 +12,9 @@
   "description": "Markov chain password generator",
   "dependencies": {
     "foswig": "^3.0.1",
-    "minimist": "^1.2.8"
+    "piscina": "^4.0.0"
   },
+  "engines": { "node": ">=16.19" },
   "scripts": {
     "preinstall": "test -f dictionary.js || ./scripts/filter-wordlist.py"
   },
@@ -22,10 +23,7 @@
   "bin": {
     "markov-pwgen": "bin/markov-pwgen.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/revolution-robotics/markov-pwgen.git",
-  },
+  "repository": "github:revolution-robotics/markov-pwgen",
   "keywords": [
     "markov",
     "chain",

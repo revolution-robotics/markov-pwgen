@@ -11,7 +11,6 @@ SRCS = Makefile \
 WORDLIST ?= /usr/share/dict/web2
 
 all: index.js dictionary.js
-	npm install
 
 dictionary.js:
 	./scripts/filter-wordlist.py $(WORDLIST)

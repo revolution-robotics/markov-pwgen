@@ -2,32 +2,152 @@
 /*
  * @(#) markov-pwgen
  *
- * Copyright © 2021, Revolution Robotics, Inc.
- *
+ * Copyright © 2023, Revolution Robotics, Inc.
+n *
  */
-import { getMarkovWords } from '../index.js'
-import parseArgs from 'minimist'
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'url'
+import { parseArgs } from 'node:util'
+import { Piscina } from 'piscina'
 
-const pgm = process.argv[1].replace(/^.*\//, '')
-const argv = parseArgs(process.argv.slice(2))
+import { getRandom, zip, zipMap } from '../util.js'
 
-if (argv.help || argv.h) {
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const piscina = new Piscina({ filename: resolve(__dirname, '../index.js') })
+
+const help = (pgm) => {
   console.log(`Usage: ${pgm} OPTIONS`)
   console.log(`OPTIONS (defaults are random within the given range):
-  --count=N         Generate N hyphen-delimited passwords (default: 3)
-  --order=N         Specify Markov chain order (default: rand [3, 5))
-  --minLength=N     Minimum password length (default: rand [4, 7))
-  --maxLength=N     Maximum password length (default: rand [7, 12))
-  --maxAttempts=N   Fail after N attempts to generate chain (default: 100)
-  --allowDuplicates Allow dictionary passwords (default: false)`)
-  process.exit(0)
+  --attemptsMax=N, -aN
+           Fail after N attempts to generate chain (default: 100)
+  --count=N, -cN
+           Generate N hyphen-delimited passwords (default: [3, 5))
+  --dictionary, -d
+           Allow dictionary passwords (default: false)
+  --lengthMin=N, -nN
+           Maximum password length N (default: [4, 7))
+  --lengthMax=N, -mN
+           Minimum password length N (default: [7, 12))
+  --order=N, -oN
+           Markov order N (default: [3, 5))
+  --transliterate=S,T, -tS,T
+           Replace in password characters of S with corresponding
+           characters of T.
+NB: Lower Markov order yields more random (i.e., less recognizable) words.`)
 }
 
-const wordList = getMarkovWords(argv)
+const getMarkovWords = async taskArgs => {
+  const wordList = await Promise.all([...Array(taskArgs.count).keys()].map(async _ =>
+    await piscina.runTask(taskArgs)))
 
-if (wordList.result.length < wordList.options.count) {
-  console.log(`${pgm}: Unable to generate password with given constraints.`)
-  process.exit(1)
-} else {
-  console.log(wordList.result.join('-'))
+  return wordList.filter(Boolean)
 }
+
+// transliterate: Replace in string characters of `s' to corresponding
+//   characters of `t'.
+if (!String.prototype.transliterate) {
+  String.prototype.transliterate = function (s, t) {
+    if (s.length > t.length) {
+      s = s.slice(0, t.length)
+    }
+
+    const mz = zipMap(zip(s, t))
+
+    return this.split('').map(c => mz[c] || c).join('')
+  }
+}
+
+const processArgs = pgm => {
+  const options = {
+    attemptsMax: {
+      type: 'string',
+      short: 'a',
+      default: '100'
+    },
+    count: {
+      type: 'string',
+      short: 'c',
+      default: `${getRandom(3, 5)}`
+    },
+    dictionary: {
+      type: 'boolean',
+      short: 'd',
+      default: false
+    },
+    help: {
+      type: 'boolean',
+      short: 'h',
+      default: false
+    },
+    lengthMin: {
+      type: 'string',
+      short: 'n',
+      default: `${getRandom(4, 7)}`
+    },
+    lengthMax: {
+      type: 'string',
+      short: 'm',
+      default: `${getRandom(7, 12)}`
+    },
+    order: {
+      type: 'string',
+      short: 'o',
+      default: `${getRandom(3, 5)}`
+    },
+    transliterate: {
+      type: 'string',
+      short: 't'
+    }
+  }
+
+  const { values } = parseArgs({ options })
+
+  if (values.help) {
+    help(pgm)
+    process.exit(0)
+  }
+
+  const taskArgs = {
+    maxAttempts: parseInt(values.attemptsMax, 10),
+    count: parseInt(values.count, 10),
+    allowDuplicates: values.dictionary,
+    minLength: parseInt(values.lengthMin, 10),
+    maxLength: parseInt(values.lengthMax, 10),
+    order: parseInt(values.order, 10),
+    transliterate: values.transliterate
+  }
+
+  if (taskArgs.maxAttempts < 1 ||
+      taskArgs.count < 1 ||
+      taskArgs.minLength < 1 ||
+      taskArgs.maxLength < taskArgs.minLength ||
+      taskArgs.order < 1) {
+    help(pgm)
+    process.exit(1)
+  }
+
+  return taskArgs
+}
+
+const main = async () => {
+  const pgm = process.argv[1].replace(/^.*\//, '')
+  const taskArgs = processArgs(pgm)
+  const wordList = await getMarkovWords(taskArgs)
+
+  if (wordList.length < taskArgs.count) {
+    console.log(`${pgm}: Unable to generate password with given constraints.`)
+    process.exit(1)
+  }
+
+  const password = wordList.join('-')
+
+  if (taskArgs.transliterate) {
+    const [s, t] = taskArgs.transliterate.split(',')
+
+    console.log(password.transliterate(s, t))
+  } else {
+    console.log(password)
+  }
+}
+
+await main()
