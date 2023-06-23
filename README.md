@@ -91,7 +91,7 @@ octable-Amosed-instic-fibric
 ```
 
 For shorter words, say, between 4 and 6 characters long, lowering the
-Markov order helps:
+Markov order helps (at the expense of less "recognizable" words):
 
 ```bash
 for i in {1..10}; do
@@ -114,7 +114,10 @@ Myrlae-firism-kniong-hoodin
 spolid-coeod-prodal
 ```
 
-To be add additional characters to the output:
+The command-line option `--transliterate=S,T` replaces in the
+password letters from the string S with the corresponding
+letters from string T. This can be used to add more characters to the
+output.  For instance, the command:
 
 ```bash
 for i in {1..10}; do
@@ -122,8 +125,8 @@ for i in {1..10}; do
 done
 ```
 
-Here, hyphens (-) are replaced with underscores (_) and small letter e
-with the number three (3):
+replaces hyphens (-) and small letter e's with underscores (_) and
+threes (3):
 
 ```
 cr3ship_whalogic_lithbr33t
