@@ -12,7 +12,7 @@ import { Piscina } from 'piscina'
 import { readFile } from 'node:fs/promises'
 
 import { zip, zipMap } from '../lib/zip.js'
-import { random64 } from '../lib/random64.js'
+import random64 from '../lib/random64.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const piscina = new Piscina({ filename: resolve(__dirname, '../index.js') })
@@ -73,7 +73,7 @@ const processArgs = async pgm => {
     count: {
       type: 'string',
       short: 'c',
-      default: `${random64(3, 5)}`
+      default: `${Number(random64(3, 5))}`
     },
     dictionary: {
       type: 'boolean',
@@ -88,17 +88,17 @@ const processArgs = async pgm => {
     lengthMin: {
       type: 'string',
       short: 'n',
-      default: `${random64(4, 7)}`
+      default: `${Number(random64(4, 7))}`
     },
     lengthMax: {
       type: 'string',
       short: 'm',
-      default: `${random64(7, 12)}`
+      default: `${Number(random64(7, 12))}`
     },
     order: {
       type: 'string',
       short: 'o',
-      default: `${random64(3, 5)}`
+      default: `${Number(random64(3, 5))}`
     },
     transliterate: {
       type: 'string',

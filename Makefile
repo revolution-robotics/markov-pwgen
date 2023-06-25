@@ -20,6 +20,9 @@ lib/dictionary.js:
 install: all
 	npm install -g $(NAME)-$(VERSION).tgz
 
+uninstall:
+	npm uninstall -g $(NAME)
+
 $(NAME)-$(VERSION).tgz: $(SRCS)
 	npm pack .
 

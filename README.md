@@ -12,8 +12,11 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-Version 2.0.2 adds cryptographically secure random number generation.
-Version 2.0.0 implements parallel execution and new command line options.
+Version 2.0.3 Bugfix.
+Version 2.0.2 Use cryptographically secure random number generator.
+Version 2.0.0 Implement parallel execution, replace minimist and add new
+              command line options.
+
 
 ## Synopsis
 
@@ -68,7 +71,7 @@ Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.2.tgz
+npm install -g ./markov-pwgen-2.0.3.tgz
 ```
 
 ## Examples
