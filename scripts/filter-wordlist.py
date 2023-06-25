@@ -14,6 +14,7 @@ import sys
 import ssl
 import tempfile
 import urllib.request
+import urllib.error
 
 SCRIPT_NAME = os.path.basename(__file__)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -63,7 +64,9 @@ if __name__ == '__main__':
 
     atexit.register(clean_up, wordlist)
 
-    print(f'Generating dictionary.js from: {wordlist}', file=sys.stderr)
+    dictionary = os.path.join(SCRIPT_DIR, '..', 'lib', 'dictionary.js')
+
+    print(f'Generating {dictionary}\n  from: {wordlist}', file=sys.stderr)
     words =  [m.group(0) for line in open(wordlist)
               for m in [re.match(FILTER_PATTERN, line.rstrip())] if m]
 
@@ -73,14 +76,14 @@ if __name__ == '__main__':
         random.shuffle(words)
         words = words[:WORDS_MAX]
 
-    with open('dictionary.js', 'w') as f:
+    with open(dictionary, 'w') as f:
         f.write('''const dict = {
-        "words": [
-    ''')
+    "words": [
+''')
         for word in sorted(words):
             f.write(f'        "{word}",\n')
         f.write('''    ]
-    };
+};
 
-    export { dict };
+export { dict };
     ''')

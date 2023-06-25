@@ -9,8 +9,10 @@ import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { parseArgs } from 'node:util'
 import { Piscina } from 'piscina'
+import { readFile } from 'node:fs/promises'
 
-import { getRandom, zip, zipMap } from '../util.js'
+import { zip, zipMap } from '../lib/zip.js'
+import { random64 } from '../lib/random64.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const piscina = new Piscina({ filename: resolve(__dirname, '../index.js') })
@@ -24,6 +26,8 @@ const help = (pgm) => {
            Generate N hyphen-delimited passwords (default: [3, 5))
   --dictionary, -d
            Allow dictionary passwords (default: false)
+  --help, -h
+           Print this help, then exit.
   --lengthMin=N, -nN
            Maximum password length N (default: [4, 7))
   --lengthMax=N, -mN
@@ -33,6 +37,8 @@ const help = (pgm) => {
   --transliterate=S,T, -tS,T
            Replace in password characters of S with corresponding
            characters of T.
+  --version, -v
+           Print version, then exit.
 NB: Lower Markov order yields more random (i.e., less recognizable) words.`)
 }
 
@@ -57,7 +63,7 @@ if (!String.prototype.transliterate) {
   }
 }
 
-const processArgs = pgm => {
+const processArgs = async pgm => {
   const options = {
     attemptsMax: {
       type: 'string',
@@ -67,7 +73,7 @@ const processArgs = pgm => {
     count: {
       type: 'string',
       short: 'c',
-      default: `${getRandom(3, 5)}`
+      default: `${random64(3, 5)}`
     },
     dictionary: {
       type: 'boolean',
@@ -82,21 +88,26 @@ const processArgs = pgm => {
     lengthMin: {
       type: 'string',
       short: 'n',
-      default: `${getRandom(4, 7)}`
+      default: `${random64(4, 7)}`
     },
     lengthMax: {
       type: 'string',
       short: 'm',
-      default: `${getRandom(7, 12)}`
+      default: `${random64(7, 12)}`
     },
     order: {
       type: 'string',
       short: 'o',
-      default: `${getRandom(3, 5)}`
+      default: `${random64(3, 5)}`
     },
     transliterate: {
       type: 'string',
       short: 't'
+    },
+    version: {
+      type: 'boolean',
+      short: 'v',
+      default: false
     }
   }
 
@@ -104,6 +115,15 @@ const processArgs = pgm => {
 
   if (values.help) {
     help(pgm)
+    process.exit(0)
+  } else if (values.version) {
+    const pkgStr = await readFile(`${__dirname}/../package.json`, {
+      encoding: 'utf8',
+      flag: 'r'
+    })
+    const pkgObj = JSON.parse(pkgStr)
+
+    console.log(`${pkgObj.name} v${pkgObj.version}`)
     process.exit(0)
   }
 
@@ -131,7 +151,7 @@ const processArgs = pgm => {
 
 const main = async () => {
   const pgm = process.argv[1].replace(/^.*\//, '')
-  const taskArgs = processArgs(pgm)
+  const taskArgs = await processArgs(pgm)
   const wordList = await getMarkovWords(taskArgs)
 
   if (wordList.length < taskArgs.count) {

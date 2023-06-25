@@ -5,21 +5,26 @@ SRCS = Makefile \
 	README.md \
 	bin/markov-pwgen.js \
 	index.js \
+	lib/random64.js \
+	lib/zip.js \
 	package.json \
 	scripts/filter-wordlist.py
 
 WORDLIST ?= /usr/share/dict/web2
 
-all: index.js dictionary.js
+all: lib/dictionary.js $(NAME)-$(VERSION).tgz
 
-dictionary.js:
+lib/dictionary.js:
 	./scripts/filter-wordlist.py $(WORDLIST)
 
-install: all $(NAME)-$(VERSION).tgz
+install: all
 	npm install -g $(NAME)-$(VERSION).tgz
 
 $(NAME)-$(VERSION).tgz: $(SRCS)
 	npm pack .
 
+publish: clean all
+	npm publish $(NAME)-$(VERSION).tgz
+
 clean:
-	rm -rf *.tgz node_modules dictionary.js package-lock.json yarn.lock *~
+	rm -rf *.tgz node_modules lib/dictionary.js package-lock.json yarn.lock *~

@@ -1,21 +1,24 @@
 # Markov Chain Password Generator
 
 `markov-pwgen` is a JavaScript command-line utility leveraging
-[Foswig.js](https://github.com/mrsharpoblunto/foswig.js/) and
-[Piscina](https://github.com/piscinajs/piscina) libraries
-to generate memorable passwords derived from a given word list.
-
-Version 2.0.0 adds a number of improvements, but the command-line
-interface is not compatible with previous versions.
+[Foswig.js](https://github.com/mrsharpoblunto/foswig.js/)
+and
+[Piscina](https://github.com/piscinajs/piscina)
+libraries to generate memorable passwords derived from a given word
+list.
 
 If _/usr/share/dict/web2_ exists, it is used as the default word list.
 Otherwise, a
-[word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT) is downloaded.
+[word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
+is downloaded.
+
+Version 2.0.2 adds cryptographically secure random number generation.
+Version 2.0.0 implements parallel execution and new command line options.
 
 ## Synopsis
 
 ```
-Usage: markov-pwgen OPTIONS
+Usage: markov-pwgen.js OPTIONS
 OPTIONS (defaults are random within the given range):
   --attemptsMax=N, -aN
            Fail after N attempts to generate chain (default: 100)
@@ -23,6 +26,8 @@ OPTIONS (defaults are random within the given range):
            Generate N hyphen-delimited passwords (default: [3, 5))
   --dictionary, -d
            Allow dictionary passwords (default: false)
+  --help, -h
+           Print this help, then exit.
   --lengthMin=N, -nN
            Maximum password length N (default: [4, 7))
   --lengthMax=N, -mN
@@ -32,6 +37,8 @@ OPTIONS (defaults are random within the given range):
   --transliterate=S,T, -tS,T
            Replace in password characters of S with corresponding
            characters of T.
+  --version, -v
+           Print version, then exit.
 NB: Lower Markov order yields more random (i.e., less recognizable) words.
 ```
 
@@ -54,14 +61,14 @@ and if GNU `make` and the JSON parser `jq` are
 available, run:
 
 ```
-make install
+gmake install
 ```
 
 Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.0.tgz
+npm install -g ./markov-pwgen-2.0.2.tgz
 ```
 
 ## Examples
