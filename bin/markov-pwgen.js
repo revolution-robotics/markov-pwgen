@@ -11,7 +11,6 @@ import { parseArgs } from 'node:util'
 import { Piscina } from 'piscina'
 import { readFile } from 'node:fs/promises'
 
-import { zip, zipMap } from '../lib/zip.js'
 import random64 from '../lib/random64.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -43,7 +42,7 @@ NB: Lower Markov order yields more random (i.e., less recognizable) words.`)
 }
 
 const getMarkovWords = async taskArgs => {
-  const wordList = await Promise.all([...Array(taskArgs.count).keys()].map(async _ =>
+  const wordList = await Promise.all([...Array(taskArgs.count)].map(async _ =>
     await piscina.runTask(taskArgs)))
 
   return wordList.filter(Boolean)
@@ -57,7 +56,9 @@ if (!String.prototype.transliterate) {
       s = s.slice(0, t.length)
     }
 
-    const mz = zipMap(zip(s, t))
+    // Initialize object from letters of s and t as properties and
+    // values, respectively.
+    const mz = Object.assign(...Array.from(s).map((e, i) => ({ [e]: t[i] })))
 
     return this.split('').map(c => mz[c] || c).join('')
   }

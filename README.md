@@ -12,6 +12,7 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
+- Version 2.0.5 Code clean up.
 - Version 2.0.4 Markdown formatting.
 - Version 2.0.3 Bugfix.
 - Version 2.0.2 Use cryptographically secure random number generator.
@@ -72,7 +73,7 @@ Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.4.tgz
+npm install -g ./markov-pwgen-2.0.5.tgz
 ```
 
 ## Examples
