@@ -3,7 +3,7 @@
  * @(#) markov-pwgen
  *
  * Copyright © 2023, Revolution Robotics, Inc.
-n *
+ *
  */
 import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
@@ -28,9 +28,9 @@ const help = (pgm) => {
   --help, -h
            Print this help, then exit.
   --lengthMin=N, -nN
-           Maximum password length N (default: [4, 7))
+           Minimum password length N (default: [4, 7))
   --lengthMax=N, -mN
-           Minimum password length N (default: [7, 12))
+           Maximum password length N (default: [7, 12))
   --order=N, -oN
            Markov order N (default: [3, 5))
   --transliterate=S,T, -tS,T
@@ -139,12 +139,12 @@ const processArgs = async pgm => {
   }
 
   if (taskArgs.maxAttempts < 1 ||
-      taskArgs.count < 1 ||
-      taskArgs.minLength < 1 ||
-      taskArgs.maxLength < taskArgs.minLength ||
-      taskArgs.order < 1) {
-    help(pgm)
-    process.exit(1)
+    taskArgs.count < 1 ||
+    taskArgs.minLength < 1 ||
+    taskArgs.maxLength < taskArgs.minLength ||
+    taskArgs.order < 1) {
+      help(pgm)
+      process.exit(1)
   }
 
   return taskArgs
