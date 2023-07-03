@@ -1,33 +1,30 @@
-NAME = $(shell jq -r .name package.json)
-VERSION = $(shell jq -r .version package.json)
+BUILD_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+NAME = $(shell jq -r .name $(BUILD_DIR)package.json)
+VERSION = $(shell jq -r .version $(BUILD_DIR)package.json)
 
-SRCS = Makefile \
-	README.md \
-	bin/markov-pwgen.js \
-	index.js \
-	lib/random64.js \
-	lib/zip.js \
-	package.json \
-	scripts/filter-wordlist.py
+SRCS =  $(BUILD_DIR)Makefile \
+	$(BUILD_DIR)README.md \
+	$(BUILD_DIR)bin/markov-pwgen.js \
+	$(BUILD_DIR)index.js \
+	$(BUILD_DIR)lib/random64.js \
+	$(BUILD_DIR)package.json \
+	$(BUILD_DIR)scripts/filter-wordlist.py
 
 WORDLIST ?= /usr/share/dict/web2
 
-all: lib/dictionary.js $(NAME)-$(VERSION).tgz
-
-lib/dictionary.js:
-	./scripts/filter-wordlist.py $(WORDLIST)
+all: $(BUILD_DIR)$(NAME)-$(VERSION).tgz
 
 install: all
-	npm install -g $(NAME)-$(VERSION).tgz
+	npm install -g $(BUILD_DIR)$(NAME)-$(VERSION).tgz
 
 uninstall:
 	npm uninstall -g $(NAME)
 
-$(NAME)-$(VERSION).tgz: $(SRCS)
-	npm pack .
+$(BUILD_DIR)$(NAME)-$(VERSION).tgz:
+	npm pack $(BUILD_DIR)
 
 publish: clean all
-	npm publish $(NAME)-$(VERSION).tgz
+	npm publish $(BUILD_DIR)$(NAME)-$(VERSION).tgz
 
 clean:
-	rm -rf *.tgz node_modules lib/dictionary.js package-lock.json yarn.lock *~
+	rm -rf $(BUILD_DIR)*.tgz $(BUILD_DIR)node_modules $(BUILD_DIR)lib/dictionary.js $(BUILD_DIR)package-lock.json  $(BUILD_DIR)*~

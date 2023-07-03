@@ -12,6 +12,7 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
+- Version 2.0.6 Limit thread count.
 - Version 2.0.5 Code clean up.
 - Version 2.0.4 Markdown formatting.
 - Version 2.0.3 Bugfix.
@@ -34,9 +35,9 @@ OPTIONS (defaults are random within the given range):
   --help, -h
            Print this help, then exit.
   --lengthMin=N, -nN
-           Maximum password length N (default: [4, 7))
+           Minimum password length N (default: [4, 7))
   --lengthMax=N, -mN
-           Minimum password length N (default: [7, 12))
+           Maximum password length N (default: [7, 12))
   --order=N, -oN
            Markov order N (default: [3, 5))
   --transliterate=S,T, -tS,T
@@ -73,7 +74,7 @@ Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.5.tgz
+npm install -g ./markov-pwgen-2.0.6.tgz
 ```
 
 ## Examples

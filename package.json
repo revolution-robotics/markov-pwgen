@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -14,7 +14,7 @@
     "foswig": "^3.0.1",
     "piscina": "^4.0.0"
   },
-  "engines": { "node": ">=16.19" },
+  "engines": { "node": ">=18.14" },
   "scripts": {
     "preinstall": "test -f dictionary.js || ./scripts/filter-wordlist.py"
   },

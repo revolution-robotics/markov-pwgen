@@ -9,12 +9,12 @@ import { dirname, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import { parseArgs } from 'node:util'
 import { Piscina } from 'piscina'
+import os from 'node:os'
 import { readFile } from 'node:fs/promises'
 
 import random64 from '../lib/random64.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const piscina = new Piscina({ filename: resolve(__dirname, '../index.js') })
 
 const help = (pgm) => {
   console.log(`Usage: ${pgm} OPTIONS`)
@@ -39,13 +39,6 @@ const help = (pgm) => {
   --version, -v
            Print version, then exit.
 NB: Lower Markov order yields more random (i.e., less recognizable) words.`)
-}
-
-const getMarkovWords = async taskArgs => {
-  const wordList = await Promise.all([...Array(taskArgs.count)].map(async _ =>
-    await piscina.runTask(taskArgs)))
-
-  return wordList.filter(Boolean)
 }
 
 // transliterate: Replace in string characters of `s' to corresponding
@@ -153,7 +146,15 @@ const processArgs = async pgm => {
 const main = async () => {
   const pgm = process.argv[1].replace(/^.*\//, '')
   const taskArgs = await processArgs(pgm)
-  const wordList = await getMarkovWords(taskArgs)
+  const piscina = new Piscina({
+    filename: resolve(__dirname, '../index.js'),
+    minThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism / 2)),
+    maxThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism * 1.5)),
+    idleTimeout: 100
+  })
+
+  const wordList = await Promise.all([...Array(taskArgs.count)].map(async _ =>
+    await piscina.runTask(taskArgs)).filter(Boolean))
 
   if (wordList.length < taskArgs.count) {
     console.log(`${pgm}: Unable to generate password with given constraints.`)
@@ -163,7 +164,7 @@ const main = async () => {
   const password = wordList.join('-')
 
   if (taskArgs.transliterate) {
-    const [s, t] = taskArgs.transliterate.split(',')
+    const [s, t] = taskArgs.transliterate.split(/[,;]\s*|\s+/)
 
     console.log(password.transliterate(s, t))
   } else {
