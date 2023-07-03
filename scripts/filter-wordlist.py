@@ -78,12 +78,12 @@ if __name__ == '__main__':
 
     with open(dictionary, 'w') as f:
         f.write('''const dict = {
-    "words": [
+  "words": [
 ''')
         for word in sorted(words):
-            f.write(f'        "{word}",\n')
-        f.write('''    ]
-};
+            f.write(f'    "{word}",\n')
+        f.write('''  ]
+}
 
-export { dict };
-    ''')
+export { dict }
+''')
