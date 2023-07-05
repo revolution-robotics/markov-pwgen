@@ -5,13 +5,12 @@
  * Copyright © 2023, Revolution Robotics, Inc.
  *
  */
-import { dirname, resolve } from 'path'
-import { fileURLToPath } from 'url'
+import { readFile } from 'node:fs/promises'
+import os from 'node:os'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { Piscina } from 'piscina'
-import os from 'node:os'
-import { readFile } from 'node:fs/promises'
-
 import random64 from '../lib/random64.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -111,7 +110,8 @@ const processArgs = async pgm => {
     help(pgm)
     process.exit(0)
   } else if (values.version) {
-    const pkgStr = await readFile(`${__dirname}/../package.json`, {
+    const pkgPath = join(__dirname, '..', 'package.json')
+    const pkgStr = await readFile(pkgPath, {
       encoding: 'utf8',
       flag: 'r'
     })
@@ -147,7 +147,7 @@ const main = async () => {
   const pgm = process.argv[1].replace(/^.*\//, '')
   const taskArgs = await processArgs(pgm)
   const piscina = new Piscina({
-    filename: resolve(__dirname, '../index.js'),
+    filename: join(__dirname, '..', 'index.js'),
     minThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism / 2)),
     maxThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism * 1.5)),
     idleTimeout: 100

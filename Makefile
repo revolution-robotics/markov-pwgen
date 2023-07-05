@@ -8,7 +8,7 @@ SRCS =  $(BUILD_DIR)Makefile \
 	$(BUILD_DIR)index.js \
 	$(BUILD_DIR)lib/random64.js \
 	$(BUILD_DIR)package.json \
-	$(BUILD_DIR)scripts/filter-wordlist.py
+	$(BUILD_DIR)scripts/filter-wordlist.js
 
 WORDLIST ?= /usr/share/dict/web2
 

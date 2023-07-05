@@ -12,6 +12,7 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
+- Version 2.0.7 Preliminary MS Windows support.
 - Version 2.0.6 Limit thread count.
 - Version 2.0.5 Code clean up.
 - Version 2.0.4 Markdown formatting.
@@ -74,7 +75,7 @@ Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.6.tgz
+npm install -g ./markov-pwgen-2.0.7.tgz
 ```
 
 ## Examples
