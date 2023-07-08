@@ -1,5 +1,13 @@
 # Markov Chain Password Generator
 
+- [Description](#description)
+- [Synopsis](#synopsis)
+- [Installation](#installation)
+- [MS Windows](#ms-windows)
+- [Examples](#examples)
+
+## Description
+
 `markov-pwgen` is a JavaScript command-line utility leveraging
 [Foswig.js](https://github.com/mrsharpoblunto/foswig.js/)
 and
@@ -12,7 +20,8 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-- Version 2.0.7 Preliminary MS Windows support.
+- Version 2.0.8 Use a faster loop.
+- Version 2.0.7 MS Windows support.
 - Version 2.0.6 Limit thread count.
 - Version 2.0.5 Code clean up.
 - Version 2.0.4 Markdown formatting.
@@ -20,7 +29,6 @@ is downloaded.
 - Version 2.0.2 Use cryptographically secure random number generator.
 - Version 2.0.0 Implement parallel execution, replace minimist and add new
                 command line options.
-
 
 ## Synopsis
 
@@ -38,7 +46,7 @@ OPTIONS (defaults are random within the given range):
   --lengthMin=N, -nN
            Minimum password length N (default: [4, 7))
   --lengthMax=N, -mN
-           Maximum password length N (default: [7, 12))
+           Maximum password length N (default: [7, 14))
   --order=N, -oN
            Markov order N (default: [3, 5))
   --transliterate=S,T, -tS,T
@@ -75,8 +83,23 @@ Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.7.tgz
+npm install -g ./markov-pwgen-2.0.8.tgz
 ```
+
+## MS Windows
+
+Do **not** attempt to install `markov-pwgen` with **PowerShell**. If not
+already installed, follow the instructions:
+[Install NodeJS on Windows](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows#install-git).
+Unless using Windows Subsystem for Linux, install **Git** along with
+**Node.js**.  Then, with **Git-Bash** running in Terminal, verify that `node` is
+in the command search path, e.g.:
+
+```bash
+export PATH=$PATH:'/c/Program Files/nodejs'
+```
+
+Now, `markov-pwgen` can be installed as described above.
 
 ## Examples
 

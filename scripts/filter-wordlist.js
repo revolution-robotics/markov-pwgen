@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const __filename = path.basename(import.meta.url)
 
 const dictionary = path.join(__dirname, '..', 'lib', 'dictionary.js')
-const filterPattern = /^[^" ]{3,12}$/
+const filterPattern = /^[^" ]{3,14}$/
 const wordsMax = 200000
 const wordListLocal = path.join(path.sep, 'usr', 'share', 'dict', 'web2')
 const wordListRemote = 'https://www.gutenberg.org/files/3201/files/SINGLE.TXT'
@@ -74,15 +74,14 @@ const main = async () => {
   "words": [
 `, null)
 
-    for (const word of words) {
-      await fh.write(`    "${word}",\n`)
-    }
+    await Promise.all(words.map(word => {
+      return fh.write(`    "${word}",\n`)
+    }))
     await fh.write(`  ]
 }
 
 export { dict }
 `)
-
     await fh.close()
   } catch ({ name, message }) {
     console.error(name, message)

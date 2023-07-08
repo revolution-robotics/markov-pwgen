@@ -29,7 +29,7 @@ const help = (pgm) => {
   --lengthMin=N, -nN
            Minimum password length N (default: [4, 7))
   --lengthMax=N, -mN
-           Maximum password length N (default: [7, 12))
+           Maximum password length N (default: [7, 14))
   --order=N, -oN
            Markov order N (default: [3, 5))
   --transliterate=S,T, -tS,T
@@ -86,7 +86,7 @@ const processArgs = async pgm => {
     lengthMax: {
       type: 'string',
       short: 'm',
-      default: `${Number(random64(7, 12))}`
+      default: `${Number(random64(7, 14))}`
     },
     order: {
       type: 'string',
