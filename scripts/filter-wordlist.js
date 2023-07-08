@@ -17,7 +17,7 @@ const __filename = path.basename(import.meta.url)
 
 const dictionary = path.join(__dirname, '..', 'lib', 'dictionary.js')
 const filterPattern = /^[^" ]{3,14}$/
-const wordsMax = 200000
+const wordsMax = 250000
 const wordListLocal = path.join(path.sep, 'usr', 'share', 'dict', 'web2')
 const wordListRemote = 'https://www.gutenberg.org/files/3201/files/SINGLE.TXT'
 
@@ -44,11 +44,11 @@ if (!Array.prototype.shuffle) {
 
   // Fisher-Yates shuffle
   Array.prototype.shuffle = function () {
-    const ary = Array.from(this)
-    const len = ary.length
+    const ary = []
+    const len = this.length
 
-    for (let i = len - 1, j = Number(random64(len)); i > 0; j = Number(random64(i--))) {
-      [ary[i], ary[j]] = [ary[j], ary[i]]
+    for (let i = 0, j = 0; i < len; j = Number(random64(++i + 1))) {
+      [ary[i], ary[j]] = [ary[j], this[i]]
     }
 
     return ary
@@ -62,7 +62,7 @@ const main = async () => {
     console.log(`Generating ${dictionary}\n  from: ${wordList}`)
 
     const words = (await readFile(wordList, { encoding: 'utf8' }))
-      .split(/\r\n|\n/)
+      .split(/\r?\n/)
       .filter(word => word.match(filterPattern))
       .shuffle()
       .slice(0, wordsMax)
@@ -73,7 +73,6 @@ const main = async () => {
     await fh.write(`const dict = {
   "words": [
 `, null)
-
     await Promise.all(words.map(word => {
       return fh.write(`    "${word}",\n`)
     }))

@@ -20,6 +20,7 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
+- Version 2.0.9 Increase dictionary size.
 - Version 2.0.8 Use a faster loop.
 - Version 2.0.7 MS Windows support.
 - Version 2.0.6 Limit thread count.
@@ -33,7 +34,7 @@ is downloaded.
 ## Synopsis
 
 ```
-Usage: markov-pwgen.js OPTIONS
+Usage: markov-pwgen OPTIONS
 OPTIONS (defaults are random within the given range):
   --attemptsMax=N, -aN
            Fail after N attempts to generate chain (default: 100)
@@ -83,14 +84,14 @@ Otherwise, run:
 
 ```
 npm pack .
-npm install -g ./markov-pwgen-2.0.8.tgz
+npm install -g ./markov-pwgen-2.0.9.tgz
 ```
 
 ## MS Windows
 
 Do **not** attempt to install `markov-pwgen` with **PowerShell**. If not
 already installed, follow the instructions:
-[Install NodeJS on Windows](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows#install-git).
+[Install NodeJS on Windows](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
 Unless using Windows Subsystem for Linux, install **Git** along with
 **Node.js**.  Then, with **Git-Bash** running in Terminal, verify that `node` is
 in the command search path, e.g.:
