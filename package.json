@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -16,7 +16,9 @@
   },
   "engines": { "node": ">=18.14" },
   "scripts": {
-    "preinstall": "test -f ./lib/dictionary.js || ./scripts/filter-wordlist.js"
+    "preinstall": "test -f ./lib/word-list.js || ./scripts/filter-wordlist.js",
+    "build-wordlist": "./scripts/filter-wordlist.js",
+    "update-wordlist": "install lib/word-list.js $(npm list -g | head -1)/node_modules/$(npm query :root | jq -r '.[]|.name')/lib/"
   },
   "type": "module",
   "main": "index.js",

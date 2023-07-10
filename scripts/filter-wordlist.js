@@ -2,8 +2,8 @@
 /*
  * @(#) filter-wordlist.py
  *
- * This script saves as a JSON dictionary a random subset of words
- * matching a regular expression in a wordlist.
+ * This script generates a JSON array of words from a random subset of
+ * a given word list that matches a regular expression.
  *
  */
 import { open, readFile } from 'node:fs/promises'
@@ -15,7 +15,7 @@ import random64 from '../lib/random64.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const __filename = path.basename(import.meta.url)
 
-const dictionary = path.join(__dirname, '..', 'lib', 'dictionary.js')
+const filteredWordList = path.join(__dirname, '..', 'lib', 'word-list.js')
 const filterPattern = /^[^" ]{3,14}$/
 const wordsMax = 250000
 const wordListLocal = path.join(path.sep, 'usr', 'share', 'dict', 'web2')
@@ -59,7 +59,7 @@ const main = async () => {
   try {
     const wordList = await getWordList(process.argv[2])
 
-    console.log(`Generating ${dictionary}\n  from: ${wordList}`)
+    console.log(`Generating ${filteredWordList}\n  from: ${wordList}`)
 
     const words = (await readFile(wordList, { encoding: 'utf8' }))
       .split(/\r?\n/)
@@ -68,9 +68,9 @@ const main = async () => {
       .slice(0, wordsMax)
       .sort()
 
-    const fh = await open(dictionary, 'w', 0o660)
+    const fh = await open(filteredWordList, 'w', 0o660)
 
-    await fh.write(`const dict = {
+    await fh.write(`const wordList = {
   "words": [
 `, null)
     await Promise.all(words.map(word => {
@@ -79,7 +79,7 @@ const main = async () => {
     await fh.write(`  ]
 }
 
-export { dict }
+export default wordList
 `)
     await fh.close()
   } catch ({ name, message }) {

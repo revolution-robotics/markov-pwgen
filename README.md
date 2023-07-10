@@ -4,6 +4,7 @@
 - [Synopsis](#synopsis)
 - [Installation](#installation)
 - [MS Windows](#ms-windows)
+- [Word List Update](#word-list-update)
 - [Examples](#examples)
 
 ## Description
@@ -20,16 +21,17 @@ Otherwise, a
 [word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-- Version 2.0.9 Increase dictionary size.
-- Version 2.0.8 Use a faster loop.
-- Version 2.0.7 MS Windows support.
-- Version 2.0.6 Limit thread count.
-- Version 2.0.5 Code clean up.
-- Version 2.0.4 Markdown formatting.
-- Version 2.0.3 Bugfix.
-- Version 2.0.2 Use cryptographically secure random number generator.
-- Version 2.0.0 Implement parallel execution, replace minimist and add new
-                command line options.
+- Version 2.0.10 Add Makefile target `update-wordlist`.
+- Version 2.0.9  Increase word list size.
+- Version 2.0.8  Use a faster loop.
+- Version 2.0.7  MS Windows support.
+- Version 2.0.6  Limit thread count.
+- Version 2.0.5  Code clean up.
+- Version 2.0.4  Markdown formatting.
+- Version 2.0.3  Bugfix.
+- Version 2.0.2  Use cryptographically secure random number generator.
+- Version 2.0.0  Implement parallel execution, replace minimist and add new
+                 command line options.
 
 ## Synopsis
 
@@ -62,13 +64,13 @@ NB: Lower Markov order yields more random (i.e., less recognizable) words.
 
 To install from the web, run on the command line:
 
-```
+```bash
 npm install -g  markov-pwgen
 ```
 
 To install from source:
 
-```
+```bash
 git clone https://github.com/revolution-robotics/markov-pwgen
 cd ./markov-pwgen
 ```
@@ -76,15 +78,15 @@ cd ./markov-pwgen
 and if GNU `make` and the JSON parser `jq` are
 available, run:
 
-```
+```bash
 gmake install
 ```
 
 Otherwise, run:
 
-```
+```bash
 npm pack .
-npm install -g ./markov-pwgen-2.0.9.tgz
+npm install -g ./markov-pwgen-2.0.10.tgz
 ```
 
 ## MS Windows
@@ -101,6 +103,18 @@ export PATH=$PATH:'/c/Program Files/nodejs'
 ```
 
 Now, `markov-pwgen` can be installed as described above.
+
+## Word List Update
+
+Passwords are derived from a filtered version of a given word list. To
+filter and deploy an updated word list, a `gmake` target is provided in
+the `markov-pwgen` source:
+
+```bash
+gmake update-wordlist WORDLIST=/path/to/updated-wordlist
+```
+
+where */path/to/updated-wordlist* is the given word list update.
 
 ## Examples
 

@@ -122,3 +122,5 @@ package-lock.json
 yarn.lock
 dictionary.js
 *~
+**/#*#
+.#*
