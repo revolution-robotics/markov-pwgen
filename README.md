@@ -3,9 +3,11 @@
 - [Description](#description)
 - [Synopsis](#synopsis)
 - [Installation](#installation)
+- [Source Installation](#source-installation)
 - [MS Windows](#ms-windows)
 - [Word List Update](#word-list-update)
 - [Examples](#examples)
+- [Bugs](#bugs)
 
 ## Description
 
@@ -13,25 +15,19 @@
 [Foswig.js](https://github.com/mrsharpoblunto/foswig.js/)
 and
 [Piscina](https://github.com/piscinajs/piscina)
-libraries to generate memorable passwords derived from a given word
-list.
+libraries to generate memorable passwords derived a given word list.
 
-If _/usr/share/dict/web2_ exists, it is used as the default word list.
-Otherwise, a
-[word list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
+If a word list is not specified during installation, then the detected
+language settings of the local computer are used to fetch a list of
+words in the corresponding language from
+[Krypton's Word Lists](https://github.com/kkrypt0nn/wordlists).
+Languages oriented from right to left will be supported in a future release.
+If a suitable word list is not found, then _/usr/share/dict/web2_ is
+used if available, otherwise a
+[list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-- Version 2.0.10 Add Makefile target `update-wordlist`.
-- Version 2.0.9  Increase word list size.
-- Version 2.0.8  Use a faster loop.
-- Version 2.0.7  MS Windows support.
-- Version 2.0.6  Limit thread count.
-- Version 2.0.5  Code clean up.
-- Version 2.0.4  Markdown formatting.
-- Version 2.0.3  Bugfix.
-- Version 2.0.2  Use cryptographically secure random number generator.
-- Version 2.0.0  Implement parallel execution, replace minimist and add new
-                 command line options.
+- Version 2.1.0   Fix the word list parser. Introduce locale support.
 
 ## Synopsis
 
@@ -68,14 +64,25 @@ To install from the web, run on the command line:
 npm install -g  markov-pwgen
 ```
 
-To install from source:
+or to use a non-default locale, try, e.g.:
+
+```bash
+LANG=fr npm install -g  markov-pwgen
+```
+
+though only a few of the locales in */usr/share/locale* are currently
+supported.
+
+## Source Installation
+
+To install from source, on the command line run:
 
 ```bash
 git clone https://github.com/revolution-robotics/markov-pwgen
 cd ./markov-pwgen
 ```
 
-and if GNU `make` and the JSON parser `jq` are
+and if GNU `make` and JSON parser `jq` are
 available, run:
 
 ```bash
@@ -86,7 +93,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.0.10.tgz
+npm install -g ./markov-pwgen-2.1.0.tgz
 ```
 
 ## MS Windows
@@ -107,14 +114,21 @@ Now, `markov-pwgen` can be installed as described above.
 ## Word List Update
 
 Passwords are derived from a filtered version of a given word list. To
-filter and deploy an updated word list, a `gmake` target is provided in
-the `markov-pwgen` source:
+filter and deploy an updated or alternative word list, a `gmake` target
+is provided in the `markov-pwgen` source:
 
 ```bash
-gmake update-wordlist WORDLIST=/path/to/updated-wordlist
+gmake update-wordlist WORDLIST=/path-or-url/to/updated-wordlist
 ```
 
-where */path/to/updated-wordlist* is the given word list update.
+where */path-or-url/to/updated-wordlist* is the given word list
+update.
+
+To change the locale of the word list, use, e.g.:
+
+```bash
+LANG=fr gmake update-wordlist
+```
 
 ## Examples
 
@@ -192,3 +206,7 @@ m3gat3l3s_sh3b3rit3_aph3cial
 Caps3r_polyd3sic_r3v3rt3l
 sansiv3_Solpus_r3bl3d_3mbarg3
 ```
+
+# Bugs
+Please submit questions or bug reports to
+[markov-pwgen issues](https://github.com/revolution-robotics/markov-pwgen/issues).

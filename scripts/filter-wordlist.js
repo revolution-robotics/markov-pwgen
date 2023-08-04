@@ -20,8 +20,32 @@ const filterPattern = /^[^" ]{3,14}$/
 const wordsMax = 250000
 const wordListLocal = path.join(path.sep, 'usr', 'share', 'dict', 'web2')
 const wordListRemote = 'https://www.gutenberg.org/files/3201/files/SINGLE.TXT'
+const localeEnv = ['LANG', 'LANGUAGE', 'LC_ALL', 'LC_MESSAGES']
+const locale = localeEnv.map(v => process.env[v]?.split('_')[0].toLowerCase()).filter(Boolean)[0]
+const wordListByLocale = {
+  // ar: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/arabic.txt',
+  hr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/croatian.txt',
+  cs: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/czech.txt',
+  da: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/danish.txt',
+  nl: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/dutch.txt',
+  en: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/english.txt',
+  fr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/french.txt',
+  ka: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/georgian.txt',
+  de: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/german.txt',
+  // he: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/hebrew.txt',
+  it: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/italian.txt',
+  no: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/norwegian.txt',
+  pl: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/polish.txt',
+  pt: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/portuguese.txt',
+  ru: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/russian.txt',
+  sr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/serbian.txt',
+  es: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/spanish.txt',
+  sv: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/swedish.txt',
+  // tr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/turkish.txt',
+  uk: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/ukrainian.txt'
+}
 
-const getWordList = async (source = wordListLocal) => {
+const getWordList = async (source = wordListByLocale[locale] || wordListLocal) => {
   let wordList = null
 
   if ((wordList = await getFileOrURI(source)) === null && source !== wordListRemote) {
@@ -41,7 +65,6 @@ const getWordList = async (source = wordListLocal) => {
 }
 
 if (!Array.prototype.shuffle) {
-
   // Fisher-Yates shuffle
   Array.prototype.shuffle = function () {
     const ary = []
@@ -72,10 +95,10 @@ const main = async () => {
 
     await fh.write(`const wordList = {
   "words": [
-`, null)
-    await Promise.all(words.map(word => {
-      return fh.write(`    "${word}",\n`)
-    }))
+`)
+    for (const word of words) {
+      await fh.write(`    "${word}",\n`)
+    }
     await fh.write(`  ]
 }
 

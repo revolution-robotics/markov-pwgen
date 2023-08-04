@@ -12,8 +12,6 @@ SRCS =  $(BUILD_DIR)Makefile \
 	$(BUILD_DIR)package.json \
 	$(BUILD_DIR)scripts/filter-wordlist.js
 
-WORDLIST ?= /usr/share/dict/web2
-
 .PHONY: all install uninstall update-wordlist wordlist publish
 
 all: $(BUILD_DIR)$(NAME)-$(VERSION).tgz
@@ -30,9 +28,8 @@ $(BUILD_DIR)$(NAME)-$(VERSION).tgz: $(SRCS)
 update-wordlist: wordlist
 	npm run update-wordlist
 
-
-wordlist: $(WORDLIST)
-	npm run build-wordlist -- $(WORDLIST)
+wordlist:
+	npm run filter-wordlist -- $(WORDLIST)
 
 publish: clean all
 	npm publish $(BUILD_DIR)$(NAME)-$(VERSION).tgz

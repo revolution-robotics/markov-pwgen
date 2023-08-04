@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "2.0.10",
+  "version": "2.1.0",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -12,12 +12,12 @@
   "description": "Markov chain password generator",
   "dependencies": {
     "foswig": "^3.0.1",
-    "piscina": "^4.0.0"
+    "piscina": "^4.1.0"
   },
   "engines": { "node": ">=18.14" },
   "scripts": {
     "preinstall": "test -f ./lib/word-list.js || ./scripts/filter-wordlist.js",
-    "build-wordlist": "./scripts/filter-wordlist.js",
+    "filter-wordlist": "./scripts/filter-wordlist.js",
     "update-wordlist": "install lib/word-list.js $(npm list -g | head -1)/node_modules/$(npm query :root | jq -r '.[]|.name')/lib/"
   },
   "type": "module",
