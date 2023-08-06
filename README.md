@@ -17,7 +17,8 @@
 [Foswig.js](https://github.com/mrsharpoblunto/foswig.js/)
 and
 [Piscina](https://github.com/piscinajs/piscina)
-libraries to generate memorable passwords derived a given word list.
+libraries to generate memorable passwords derived from a given word
+list.
 
 If a word list is not specified during installation, then a list of
 words in the language of the default locale is fetched from
@@ -28,8 +29,7 @@ _/usr/share/dict/web2_ is used if available, otherwise a
 [list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-- Version 2.1.1   Reword description.
-- Version 2.1.0   Fix the word list parser. Introduce locale support.
+- Recent changes: Fix word list parser. Introduce locale support.
 
 ## Synopsis
 
@@ -95,7 +95,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.1.1.tgz
+npm install -g ./markov-pwgen-2.1.2.tgz
 ```
 
 ## MS Windows
