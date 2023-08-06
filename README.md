@@ -1,3 +1,5 @@
+![Build Status](https://github.com/revolution-robotics/markov-pwgen/actions/workflows/markov-pwgen.yml/badge.svg)
+
 # Markov Chain Password Generator
 
 - [Description](#description)

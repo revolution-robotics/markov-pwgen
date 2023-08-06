@@ -118,8 +118,6 @@ dist
 .pnp.*
 
 # Local files
-package-lock.json
-yarn.lock
 lib/word-list.js
 *~
 **/#*#

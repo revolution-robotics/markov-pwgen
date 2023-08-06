@@ -18,7 +18,8 @@
   "scripts": {
     "preinstall": "test -f ./lib/word-list.js || ./scripts/filter-wordlist.js",
     "filter-wordlist": "./scripts/filter-wordlist.js",
-    "update-wordlist": "install lib/word-list.js $(npm list -g | head -1)/node_modules/$(npm query :root | jq -r '.[]|.name')/lib/"
+    "update-wordlist": "install lib/word-list.js $(npm list -g | head -1)/node_modules/$(npm query :root | jq -r '.[]|.name')/lib/",
+    "test": "bin/markov-pwgen.js | grep -oE '([^\" ]+-?){2,}' && bin/markov-pwgen.js -t-,_ | grep -oE '([^\" ]+_?){2,}'"
   },
   "type": "module",
   "main": "index.js",
