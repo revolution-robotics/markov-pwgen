@@ -19,16 +19,16 @@ and
 [Piscina](https://github.com/piscinajs/piscina)
 libraries to generate memorable passwords derived a given word list.
 
-If a word list is not specified during installation, then the detected
-language settings of the local computer are used to fetch a list of
-words in the corresponding language from
+If a word list is not specified during installation, then a list of
+words in the language of the default locale is fetched from
 [Krypton's Word Lists](https://github.com/kkrypt0nn/wordlists).
-Languages oriented from right to left will be supported in a future release.
-If a suitable word list is not found, then _/usr/share/dict/web2_ is
-used if available, otherwise a
+Languages oriented from right to left will be supported in a future
+release. If the default locale is not supported, then the word list
+_/usr/share/dict/web2_ is used if available, otherwise a
 [list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
+- Version 2.1.1   Reword description.
 - Version 2.1.0   Fix the word list parser. Introduce locale support.
 
 ## Synopsis
@@ -95,7 +95,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.1.0.tgz
+npm install -g ./markov-pwgen-2.1.1.tgz
 ```
 
 ## MS Windows
