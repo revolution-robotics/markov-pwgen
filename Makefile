@@ -14,12 +14,15 @@ SRCS =	$(BUILD_DIR).github/workflows/markov-pwgen.yml \
 	$(BUILD_DIR)package-lock.json \
 	$(BUILD_DIR)scripts/filter-wordlist.js
 
-.PHONY: all install uninstall update-wordlist wordlist publish
+.PHONY: all install install-local uninstall update-wordlist wordlist publish
 
 all: $(BUILD_DIR)$(NAME)-$(VERSION).tgz
 
 install: all
 	npm install -g $(BUILD_DIR)$(NAME)-$(VERSION).tgz
+
+install-local:
+	npm install
 
 uninstall:
 	npm uninstall -g $(NAME)
@@ -27,10 +30,13 @@ uninstall:
 $(BUILD_DIR)$(NAME)-$(VERSION).tgz: $(SRCS)
 	npm pack $(BUILD_DIR)
 
+check test: install-local
+	npm run test
+
 update-wordlist: wordlist
 	npm run update-wordlist
 
-wordlist:
+wordlist: $(WORDLIST)
 	npm run filter-wordlist -- $(WORDLIST)
 
 publish: clean all

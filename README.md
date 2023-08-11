@@ -29,7 +29,10 @@ _/usr/share/dict/web2_ is used if available, otherwise a
 [list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-- Recent changes: Fix word list parser. Introduce locale support.
+Recent changes:
+  - Fix word list parser.
+  - Introduce locale support.
+  - Add command-line option to capitalize password components.
 
 ## Synopsis
 
@@ -39,20 +42,22 @@ OPTIONS (defaults are random within the given range):
   --attemptsMax=N, -aN
            Fail after N attempts to generate chain (default: 100)
   --count=N, -cN
-           Generate N hyphen-delimited passwords (default: [3, 5))
+           Generate N hyphen-delimited passwords (default: [3, 4])
   --dictionary, -d
-           Allow dictionary passwords (default: false)
+           Allow dictionary-word passwords (default: false)
   --help, -h
            Print this help, then exit.
   --lengthMin=N, -nN
-           Minimum password length N (default: [4, 7))
+           Minimum password length N (default: [4, 6])
   --lengthMax=N, -mN
-           Maximum password length N (default: [7, 14))
+           Maximum password length N (default: [7, 13])
   --order=N, -oN
-           Markov order N (default: [3, 5))
+           Markov order N (default: [3, 4])
   --transliterate=S,T, -tS,T
            Replace in password characters of S with corresponding
            characters of T.
+  --upperCase, -u
+           Capitalize password components.
   --version, -v
            Print version, then exit.
 NB: Lower Markov order yields more random (i.e., less recognizable) words.
@@ -60,20 +65,14 @@ NB: Lower Markov order yields more random (i.e., less recognizable) words.
 
 ## Installation
 
+In the following, to use a non-default locale, prefix
+the install command with the desired locale, e.g., LANG=fr.
+
 To install from the web, run on the command line:
 
 ```bash
 npm install -g  markov-pwgen
 ```
-
-or to use a non-default locale, try, e.g.:
-
-```bash
-LANG=fr npm install -g  markov-pwgen
-```
-
-though only a few of the locales in */usr/share/locale* are currently
-supported.
 
 ## Source Installation
 
@@ -83,7 +82,6 @@ To install from source, on the command line run:
 git clone https://github.com/revolution-robotics/markov-pwgen
 cd ./markov-pwgen
 ```
-
 and if GNU `make` and JSON parser `jq` are
 available, run:
 
@@ -95,7 +93,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.1.2.tgz
+npm install -g ./markov-pwgen-2.1.3.tgz
 ```
 
 ## MS Windows
@@ -210,5 +208,7 @@ sansiv3_Solpus_r3bl3d_3mbarg3
 ```
 
 # Bugs
-Please submit questions or bug reports to
+
+If you feel that `markov-pwgen` could be improved, please consider
+creating an issue at:
 [markov-pwgen issues](https://github.com/revolution-robotics/markov-pwgen/issues).

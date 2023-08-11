@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -19,7 +19,9 @@
     "preinstall": "test -f ./lib/word-list.js || ./scripts/filter-wordlist.js",
     "filter-wordlist": "./scripts/filter-wordlist.js",
     "update-wordlist": "install lib/word-list.js $(npm list -g | head -1)/node_modules/$(npm query :root | jq -r '.[]|.name')/lib/",
-    "test": "bin/markov-pwgen.js | grep -oE '([^\" ]+-?){2,}' && bin/markov-pwgen.js -t-,_ | grep -oE '([^\" ]+_?){2,}'"
+    "simple-test": "bin/markov-pwgen.js | grep -oE '([^\" ]+-?){2,}'",
+    "uppercase-test": "bin/markov-pwgen.js -ut-aeiou,_äëïöü | grep -oE '([^\" ]+_?){2,}'",
+    "test": "npm run simple-test && npm run uppercase-test"
   },
   "type": "module",
   "main": "index.js",

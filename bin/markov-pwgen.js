@@ -7,7 +7,7 @@
  */
 import { readFile } from 'node:fs/promises'
 import os from 'node:os'
-import { dirname, join } from 'node:path'
+import { basename, dirname, join, win32 } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { Piscina } from 'piscina'
@@ -21,20 +21,22 @@ const help = (pgm) => {
   --attemptsMax=N, -aN
            Fail after N attempts to generate chain (default: 100)
   --count=N, -cN
-           Generate N hyphen-delimited passwords (default: [3, 5))
+           Generate N hyphen-delimited passwords (default: [3, 4])
   --dictionary, -d
-           Allow dictionary passwords (default: false)
+           Allow dictionary-word passwords (default: false)
   --help, -h
            Print this help, then exit.
   --lengthMin=N, -nN
-           Minimum password length N (default: [4, 7))
+           Minimum password length N (default: [4, 6])
   --lengthMax=N, -mN
-           Maximum password length N (default: [7, 14))
+           Maximum password length N (default: [7, 13])
   --order=N, -oN
-           Markov order N (default: [3, 5))
+           Markov order N (default: [3, 4])
   --transliterate=S,T, -tS,T
            Replace in password characters of S with corresponding
            characters of T.
+  --upperCase, -u
+           Capitalize password components.
   --version, -v
            Print version, then exit.
 NB: Lower Markov order yields more random (i.e., less recognizable) words.`)
@@ -52,7 +54,7 @@ if (!String.prototype.transliterate) {
     // values, respectively.
     const mz = Object.assign(...Array.from(s).map((e, i) => ({ [e]: t[i] })))
 
-    return this.split('').map(c => mz[c] || c).join('')
+    return Array.from(this).map(c => mz[c] || c).join('')
   }
 }
 
@@ -66,7 +68,7 @@ const processArgs = async pgm => {
     count: {
       type: 'string',
       short: 'c',
-      default: `${Number(random64(3, 5))}`
+      default: `${Number(random64(3, 4))}`
     },
     dictionary: {
       type: 'boolean',
@@ -81,21 +83,25 @@ const processArgs = async pgm => {
     lengthMin: {
       type: 'string',
       short: 'n',
-      default: `${Number(random64(4, 7))}`
+      default: `${Number(random64(4, 6))}`
     },
     lengthMax: {
       type: 'string',
       short: 'm',
-      default: `${Number(random64(7, 14))}`
+      default: `${Number(random64(7, 13))}`
     },
     order: {
       type: 'string',
       short: 'o',
-      default: `${Number(random64(3, 5))}`
+      default: `${Number(random64(3, 4))}`
     },
     transliterate: {
       type: 'string',
       short: 't'
+    },
+    upperCase: {
+      type: 'boolean',
+      short: 'u'
     },
     version: {
       type: 'boolean',
@@ -128,7 +134,8 @@ const processArgs = async pgm => {
     minLength: parseInt(values.lengthMin, 10),
     maxLength: parseInt(values.lengthMax, 10),
     order: parseInt(values.order, 10),
-    transliterate: values.transliterate
+    transliterate: values.transliterate,
+    upperCase: values.upperCase
   }
 
   if (taskArgs.maxAttempts < 1 ||
@@ -138,13 +145,23 @@ const processArgs = async pgm => {
     taskArgs.order < 1) {
       help(pgm)
       process.exit(1)
-  }
+    }
 
   return taskArgs
 }
 
 const main = async () => {
-  const pgm = process.argv[1].replace(/^.*\//, '')
+  let pgm = ''
+
+  switch (process.platform) {
+    case 'win32':
+      pgm = win32.basename(process.argv[1])
+      break
+    default:
+      pgm = basename(process.argv[1])
+      break
+  }
+
   const taskArgs = await processArgs(pgm)
   const piscina = new Piscina({
     filename: join(__dirname, '..', 'index.js'),
@@ -161,15 +178,23 @@ const main = async () => {
     process.exit(1)
   }
 
-  const password = wordList.join('-')
+  let password = wordList.join('-')
 
   if (taskArgs.transliterate) {
     const [s, t] = taskArgs.transliterate.split(/[,;]\s*|\s+/)
 
-    console.log(password.transliterate(s, t))
-  } else {
-    console.log(password)
+    password = password.transliterate(s, t)
   }
+
+  if (taskArgs.upperCase) {
+    /*
+     * Convert, e.g.:
+     *   ëstïnäë_mëlïbër's_crïmïnäblë_äräcödë => Ëstïnäë_Mëlïbër's_Crïmïnäblë_Äräcödë
+     */
+    password = password.replace(/(?:^)\p{L}{2}|(?<=([^\p{L}]|_))\p{L}{2}/gv, c => `${c[0].toUpperCase()}${c[1]}`)
+  }
+
+  console.log(password)
 }
 
 await main()
