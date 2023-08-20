@@ -30,7 +30,8 @@ _/usr/share/dict/web2_ is used if available, otherwise a
 is downloaded.
 
 Recent changes:
-  - Fix word list parser.
+  - Node v20 required for RegExp.prototype.unicodeSets.
+  - Don't captialize letters with number prefix.
   - Introduce locale support.
   - Add command-line option to capitalize password components.
 
@@ -93,7 +94,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.1.3.tgz
+npm install -g ./markov-pwgen-2.1.4.tgz
 ```
 
 ## MS Windows
@@ -182,29 +183,30 @@ spolid-coeod-prodal
 
 The command-line option `--transliterate=S,T` replaces in the
 password letters from the string S with the corresponding
-letters from string T. This can be used to add more characters to the
+letters from string T.
+The command-line option `--upperCase' capitalizes each "word".
+Together, these options can be used to add more characters to the
 output.  For instance, the command:
 
 ```bash
 for i in {1..10}; do
-    markov-pwgen -t'-e,_3'
+    markov-pwgen -u -t'gt,97'
 done
 ```
 
-replaces hyphens (-) and small letter e's with underscores (_) and
-threes (3), respectively:
+might produce:
 
 ```
-cr3ship_whalogic_lithbr33t
-nasokabl3_rooth3r3d_b3payano
-damasian_acull3t3_spankind_vulcat3
-3pictop_unquium_incardy
-r3nously_monoddl3ss_zoantian
-3xondon_trumi3_pig3r3d
-Cycl3a_3nf3ity_Torima_wously
-m3gat3l3s_sh3b3rit3_aph3cial
-Caps3r_polyd3sic_r3v3rt3l
-sansiv3_Solpus_r3bl3d_3mbarg3
+Knuclesi7e-Dumbuli7y-Ini7rowers-Puzz9lo7hic
+Mendisin9-Monoiden-Or9ermouses-Hemisaferome
+7rulen7ron7-Proveried-Nonli9h7ies
+Evaleyes-Ji7ier-Es7icen7-Bryocy7es
+Popias7raph-Helesses-9iaryonius
+Sperman-Unexhausea7-Encernized
+Moze77er-En7a7ic-Coi9num-An7arily
+Foreboard-Nymphala-Fixured-7olery
+Depos7-Sociferous-Papac7ic
+Ncas7ic-Brachbis7-9ruelldom
 ```
 
 # Bugs
