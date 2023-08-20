@@ -189,9 +189,9 @@ const main = async () => {
   if (taskArgs.upperCase) {
     /*
      * Convert, e.g.:
-     *   ëstïnäë_mëlïbër's_crïmïnäblë_äräcödë => Ëstïnäë_Mëlïbër's_Crïmïnäblë_Äräcödë
+     *   ëstïnäë_mëlïbër's_crïmïnäblë_äräcödë => Ëstïnäë_Mëlïbër's_Crïmïnäblë_Äräcödë
      */
-    password = password.replace(/(?:^)\p{L}{2}|(?<=([^\p{L}]|_))\p{L}{2}/gv, c => `${c[0].toUpperCase()}${c[1]}`)
+    password = password.replace(/(?:^)\p{L}{2}|(?<=([^\p{L}\p{N}]|_))\p{L}{2}/gv, c => `${c[0].toUpperCase()}${c[1]}`)
   }
 
   console.log(password)
