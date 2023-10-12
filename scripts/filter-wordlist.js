@@ -23,26 +23,26 @@ const wordListRemote = 'https://www.gutenberg.org/files/3201/files/SINGLE.TXT'
 const localeEnv = ['LANG', 'LANGUAGE', 'LC_ALL', 'LC_MESSAGES']
 const locale = localeEnv.map(v => process.env[v]?.split('_')[0].toLowerCase()).filter(Boolean)[0]
 const wordListByLocale = {
-  // ar: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/arabic.txt',
-  hr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/croatian.txt',
-  cs: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/czech.txt',
-  da: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/danish.txt',
-  nl: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/dutch.txt',
-  en: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/english.txt',
-  fr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/french.txt',
-  ka: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/georgian.txt',
-  de: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/german.txt',
-  // he: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/hebrew.txt',
-  it: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/italian.txt',
-  no: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/norwegian.txt',
-  pl: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/polish.txt',
-  pt: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/portuguese.txt',
-  ru: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/russian.txt',
-  sr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/serbian.txt',
-  es: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/spanish.txt',
-  sv: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/swedish.txt',
-  // tr: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/turkish.txt',
-  uk: 'https://github.com/kkrypt0nn/wordlists/raw/main/languages/ukrainian.txt'
+  // ar: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/arabic.txt',
+  hr: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/croatian.txt',
+  cs: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/czech.txt',
+  da: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/danish.txt',
+  nl: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/dutch.txt',
+  en: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/english.txt',
+  fr: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/french.txt',
+  ka: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/georgian.txt',
+  de: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/german.txt',
+  // he: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/hebrew.txt',
+  it: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/italian.txt',
+  no: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/norwegian.txt',
+  pl: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/polish.txt',
+  pt: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/portuguese.txt',
+  ru: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/russian.txt',
+  sr: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/serbian.txt',
+  es: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/spanish.txt',
+  sv: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/swedish.txt',
+  // tr: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/turkish.txt',
+  uk: 'https://raw.githubusercontent.com/kkrypt0nn/wordlists/main/wordlists/languages/ukrainian.txt'
 }
 
 const getWordList = async (source = wordListByLocale[locale] || wordListLocal) => {

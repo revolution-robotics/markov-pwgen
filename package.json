@@ -1,6 +1,6 @@
 {
   "name": "markov-pwgen",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -20,8 +20,8 @@
     "filter-wordlist": "./scripts/filter-wordlist.js",
     "update-wordlist": "install lib/word-list.js $(npm list -g | head -1)/node_modules/$(npm query :root | jq -r '.[]|.name')/lib/",
     "simple-test": "bin/markov-pwgen.js | grep -oE '([^\" ]+-?){2,}'",
-    "uppercase-test": "bin/markov-pwgen.js -ut'-aeiou,_äëïöü' | grep -oE '([^\" ]+_?){2,}'",
-    "number-test": "bin/markov-pwgen.js -ut'-aeiougt,_äëïöü97' | grep -oE '([^\" ]+_?){2,}'",
+    "uppercase-test": "bin/markov-pwgen.js -ut'-aeiou,_äëïöü' | grep -oE '([^\" ]+_?){2,}'",
+    "number-test": "bin/markov-pwgen.js -ut'-aeiougt,_äëïöü97' | grep -oE '([^\" ]+_?){2,}'",
     "pretest": "test -d node_modules || npm install",
     "test": "npm run simple-test && npm run uppercase-test && npm run number-test"
   },

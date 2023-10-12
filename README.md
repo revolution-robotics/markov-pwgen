@@ -30,6 +30,7 @@ _/usr/share/dict/web2_ is used if available, otherwise a
 is downloaded.
 
 Recent changes:
+  - Fix URLs of locale-based word lists.
   - Node v20 required for RegExp.prototype.unicodeSets.
   - Don't captialize letters with number prefix.
   - Introduce locale support.
@@ -94,7 +95,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.1.4.tgz
+npm install -g ./markov-pwgen-2.1.5.tgz
 ```
 
 ## MS Windows
