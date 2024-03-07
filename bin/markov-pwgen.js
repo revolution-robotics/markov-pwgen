@@ -2,39 +2,52 @@
 /*
  * @(#) markov-pwgen
  *
- * Copyright © 2023, Revolution Robotics, Inc.
+ * Copyright © 2023,2024, Revolution Robotics, Inc.
  *
  */
 import { readFile } from 'node:fs/promises'
 import os from 'node:os'
-import { basename, dirname, join, win32 } from 'node:path'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { Piscina } from 'piscina'
 import random64 from '../lib/random64.js'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const getPkg = async () => {
+  const pkgPath = path.resolve(__dirname, '..', 'package.json')
+  const pkgStr = await readFile(pkgPath, {
+    encoding: 'utf8',
+    flag: 'r'
+  })
+  return JSON.parse(pkgStr)
+}
 
 const help = (pgm) => {
   console.log(`Usage: ${pgm} OPTIONS`)
   console.log(`OPTIONS (defaults are random within the given range):
-  --attemptsMax=N, -aN
+  --attemptsMax, -a N
            Fail after N attempts to generate chain (default: 100)
-  --count=N, -cN
+  --count, -c N
            Generate N hyphen-delimited passwords (default: [3, 4])
   --dictionary, -d
            Allow dictionary-word passwords (default: false)
   --help, -h
            Print this help, then exit.
-  --lengthMin=N, -nN
+  --lengthMin, -n N
            Minimum password length N (default: [4, 6])
-  --lengthMax=N, -mN
+  --lengthMax, -m N
            Maximum password length N (default: [7, 13])
-  --order=N, -oN
+  --order, -o N
            Markov order N (default: [3, 4])
-  --transliterate=S,T, -tS,T
-           Replace in password characters of S with corresponding
-           characters of T.
+  --transliterate, -t FROM,TO
+           Replace in password characters of FROM with corresponding
+           characters of TO.
+  --truncate-set1, -s
+           By default, transliteration string TO is extended to
+           length of FROM by repeating its last character as necessary.
+           This option first truncates FROM to length of TO.
   --upperCase, -u
            Capitalize password components.
   --version, -v
@@ -42,23 +55,29 @@ const help = (pgm) => {
 NB: Lower Markov order yields more random (i.e., less recognizable) words.`)
 }
 
-// transliterate: Replace in string characters of `s' to corresponding
-//   characters of `t'.
+// transliterate: Return a new string where characters of string
+//   `fromStr' are replaced by corresponding characters of string
+//   `toStr'. When option `truncate' is false (the default), `toStr'
+//   is extended to the length of `fromStr' by repeating its last
+//   character as necessary. When option `truncate' is true, `fromStr'
+//   is truncated to the length of `toStr'.
 if (!String.prototype.transliterate) {
-  String.prototype.transliterate = function (s, t) {
-    if (s.length > t.length) {
-      s = s.slice(0, t.length)
-    }
+  String.prototype.transliterate = function (fromStr = '', toStr = '',
+                                             options = { truncate: false }) {
+    if (options.truncate)
+      fromStr = fromStr.slice(0, toStr.length)
+    else
+      toStr = toStr.padEnd(fromStr.length, toStr.slice(-1))
 
-    // Initialize object from letters of s and t as properties and
-    // values, respectively.
-    const mz = Object.assign(...Array.from(s).map((e, i) => ({ [e]: t[i] })))
+    const xlt =
+          Object.assign(...Array.from(fromStr)
+                        .map((char, i) => ({ [char]: toStr[i] })))
 
-    return Array.from(this).map(c => mz[c] || c).join('')
+    return Array.from(this).map(char => xlt[char] || char).join('')
   }
 }
 
-const processArgs = async pgm => {
+const processArgs = async pkg => {
   const options = {
     attemptsMax: {
       type: 'string',
@@ -95,6 +114,11 @@ const processArgs = async pgm => {
       short: 'o',
       default: `${Number(random64(3, 4))}`
     },
+    'truncate-set1': {
+      type: 'boolean',
+      short: 's',
+      default: false
+    },
     transliterate: {
       type: 'string',
       short: 't'
@@ -110,20 +134,16 @@ const processArgs = async pgm => {
     }
   }
 
-  const { values } = parseArgs({ options })
+  const { values } = parseArgs({
+    options,
+    allowPositionals: false
+  })
 
   if (values.help) {
-    help(pgm)
+    help(pkg.name)
     process.exit(0)
   } else if (values.version) {
-    const pkgPath = join(__dirname, '..', 'package.json')
-    const pkgStr = await readFile(pkgPath, {
-      encoding: 'utf8',
-      flag: 'r'
-    })
-    const pkgObj = JSON.parse(pkgStr)
-
-    console.log(`${pkgObj.name} v${pkgObj.version}`)
+    console.log(`${pkg.name} v${pkg.version}`)
     process.exit(0)
   }
 
@@ -135,63 +155,60 @@ const processArgs = async pgm => {
     maxLength: parseInt(values.lengthMax, 10),
     order: parseInt(values.order, 10),
     transliterate: values.transliterate,
-    upperCase: values.upperCase
+    upperCase: values.upperCase,
+    truncate: values['truncate-set1']
   }
 
   if (taskArgs.maxAttempts < 1 ||
-    taskArgs.count < 1 ||
-    taskArgs.minLength < 1 ||
-    taskArgs.maxLength < taskArgs.minLength ||
-    taskArgs.order < 1) {
-      help(pgm)
-      process.exit(1)
-    }
+      taskArgs.count < 1 ||
+      taskArgs.minLength < 1 ||
+      taskArgs.maxLength < taskArgs.minLength ||
+      taskArgs.order < 1) {
+    help(pkg.name)
+    process.exit(1)
+  }
 
   return taskArgs
 }
 
 const main = async () => {
-  let pgm = ''
+  let pkg = null
+  let taskArgs = null
+  let piscina = null
+  let wordList = null
 
-  switch (process.platform) {
-    case 'win32':
-      pgm = win32.basename(process.argv[1])
-      break
-    default:
-      pgm = basename(process.argv[1])
-      break
+  try {
+    pkg = await getPkg()
+    taskArgs = await processArgs(pkg)
+    piscina = new Piscina({
+      filename: path.resolve(__dirname, '..', 'index.js'),
+      minThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism / 2)),
+      maxThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism * 1.5)),
+      idleTimeout: 100
+    })
+    wordList = await Promise.all([...Array(taskArgs.count)].map(async _ =>
+      await piscina.runTask(taskArgs)).filter(Boolean))
+  } catch (err) {
+    console.error(err.message)
+    process.exit(1)
   }
 
-  const taskArgs = await processArgs(pgm)
-  const piscina = new Piscina({
-    filename: join(__dirname, '..', 'index.js'),
-    minThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism / 2)),
-    maxThreads: Math.min(taskArgs.count, Math.ceil(os.availableParallelism * 1.5)),
-    idleTimeout: 100
-  })
-
-  const wordList = await Promise.all([...Array(taskArgs.count)].map(async _ =>
-    await piscina.runTask(taskArgs)).filter(Boolean))
-
   if (wordList.length < taskArgs.count) {
-    console.log(`${pgm}: Unable to generate password with given constraints.`)
+    console.error(`${pkg.name}: Unable to generate password with given constraints.`)
     process.exit(1)
   }
 
   let password = wordList.join('-')
 
   if (taskArgs.transliterate) {
-    const [s, t] = taskArgs.transliterate.split(/[,;]\s*|\s+/)
+    const [s, t] = taskArgs.transliterate.split(/[,]\s*|\s+/)
 
-    password = password.transliterate(s, t)
+    password = password.transliterate(s, t, { truncate: taskArgs.truncate })
   }
 
   if (taskArgs.upperCase) {
-    /*
-     * Convert, e.g.:
-     *   ëstïnäë_mëlïbër's_crïmïnäblë_äräcödë => Ëstïnäë_Mëlïbër's_Crïmïnäblë_Äräcödë
-     */
-    password = password.replace(/(?:^)\p{L}{2}|(?<=([^\p{L}\p{N}]|_))\p{L}{2}/gv, c => `${c[0].toUpperCase()}${c[1]}`)
+    password = password.replace(/^\p{L}.|(?<=([\p{Pd}_:;]))\p{L}./gv,
+                                c => `${c[0].toUpperCase()}${c[1]}`)
   }
 
   console.log(password)

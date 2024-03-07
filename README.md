@@ -29,35 +29,46 @@ _/usr/share/dict/web2_ is used if available, otherwise a
 [list from Project Gutenberg](https://www.gutenberg.org/files/3201/files/SINGLE.TXT)
 is downloaded.
 
-Recent changes:
+### Changes in v2.2.0
+  - Update transliterate option to match tr command when length of
+    FROM and TO strings differ.
+  - Add option, `--truncate-set1`, to preserve previous transliterate
+    behavior.
+  - Improve regex implementing capitalization (option `--upperCase`).
+  - Improve error handling.
+  - Update dependencies.
+  - Add standard to devDependencies.
+### Changes in V2.1.5
   - Fix URLs of locale-based word lists.
   - Node v20 required for RegExp.prototype.unicodeSets.
-  - Don't captialize letters with number prefix.
   - Introduce locale support.
-  - Add command-line option to capitalize password components.
 
 ## Synopsis
 
 ```
 Usage: markov-pwgen OPTIONS
 OPTIONS (defaults are random within the given range):
-  --attemptsMax=N, -aN
+  --attemptsMax, -a N
            Fail after N attempts to generate chain (default: 100)
-  --count=N, -cN
+  --count, -c N
            Generate N hyphen-delimited passwords (default: [3, 4])
   --dictionary, -d
            Allow dictionary-word passwords (default: false)
   --help, -h
            Print this help, then exit.
-  --lengthMin=N, -nN
+  --lengthMin, -n N
            Minimum password length N (default: [4, 6])
-  --lengthMax=N, -mN
+  --lengthMax, -m N
            Maximum password length N (default: [7, 13])
-  --order=N, -oN
+  --order, -o N
            Markov order N (default: [3, 4])
-  --transliterate=S,T, -tS,T
-           Replace in password characters of S with corresponding
-           characters of T.
+  --transliterate, -t FROM,TO
+           Replace in password characters of FROM with corresponding
+           characters of TO.
+  --truncate-set1, -s
+           By default, transliteration string TO is extended to
+           length of FROM by repeating its last character as necessary.
+           This option first truncates FROM to length of TO.
   --upperCase, -u
            Capitalize password components.
   --version, -v
@@ -95,7 +106,7 @@ Otherwise, run:
 
 ```bash
 npm pack .
-npm install -g ./markov-pwgen-2.1.5.tgz
+npm install -g ./markov-pwgen-2.2.0.tgz
 ```
 
 ## MS Windows
@@ -182,32 +193,31 @@ Myrlae-firism-kniong-hoodin
 spolid-coeod-prodal
 ```
 
-The command-line option `--transliterate=S,T` replaces in the
-password letters from the string S with the corresponding
-letters from string T.
-The command-line option `--upperCase' capitalizes each "word".
-Together, these options can be used to add more characters to the
-output.  For instance, the command:
+Command-line option `--transliterate=FROM,TO` replaces in the output
+letters of string FROM with corresponding letters of string TO.
+Command-line option `--upperCase` capitalizes each "word" component.
+Together, these options add more variation in the output. For
+instance, the command:
 
 ```bash
 for i in {1..10}; do
-    markov-pwgen -u -t'gt,97'
+    markov-pwgen -u -t'its,!7$'
 done
 ```
 
 might produce:
 
 ```
-Knuclesi7e-Dumbuli7y-Ini7rowers-Puzz9lo7hic
-Mendisin9-Monoiden-Or9ermouses-Hemisaferome
-7rulen7ron7-Proveried-Nonli9h7ies
-Evaleyes-Ji7ier-Es7icen7-Bryocy7es
-Popias7raph-Helesses-9iaryonius
-Sperman-Unexhausea7-Encernized
-Moze77er-En7a7ic-Coi9num-An7arily
-Foreboard-Nymphala-Fixured-7olery
-Depos7-Sociferous-Papac7ic
-Ncas7ic-Brachbis7-9ruelldom
+Furan7$-Beneface-Unance$
+Vaccou$-Alvayne$$-$ub$eral-Boozener
+Re7ragoe$-Hel!g!on-Dockey!ng
+Ammone$-Malac7er-Encoax!n-Verneb
+Hered$-Fluced-Coequee-Vo7e!ng
+Azoc7a7e-Baboun7er-Federanx
+M!lder-Kal!dae-Arch!n!
+Febr!d!ne-Econqu!r!ng-Paper$ed-$udor!f!d
+Unwrongyl-Cyclo7hurl-Fam!l!7e
+Unf!l!zed-Bu$7he$-Predoneure
 ```
 
 # Bugs
