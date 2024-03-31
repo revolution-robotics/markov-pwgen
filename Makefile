@@ -4,14 +4,12 @@ VERSION = $(shell jq -r .version $(BUILD_DIR)package.json)
 
 SRCS =	$(BUILD_DIR).github/workflows/markov-pwgen.yml \
 	$(BUILD_DIR)Makefile \
-	$(BUILD_DIR)Makefile \
 	$(BUILD_DIR)README.md \
 	$(BUILD_DIR)bin/markov-pwgen.js \
 	$(BUILD_DIR)index.js \
 	$(BUILD_DIR)lib/random64.js \
 	$(BUILD_DIR)lib/utils.js \
 	$(BUILD_DIR)package.json \
-	$(BUILD_DIR)package-lock.json \
 	$(BUILD_DIR)scripts/filter-wordlist.js
 
 .PHONY: all install install-local uninstall update-wordlist wordlist publish
